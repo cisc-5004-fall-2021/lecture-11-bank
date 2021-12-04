@@ -1,12 +1,17 @@
 #include "bank.h"
 #include <iostream>
 
+// Base class constructor: defining this here means that all descendents
+// of Account must have at least a name, ID, and initial balance.
 Account::Account(string name, int id, double balance) {
     this->name = name;
     this->id = id;
     this->balance = balance;
 }
 
+// BrassAccount has nothing to add to the Account constructor.
+// We define an empty constructor and use a member initializer list
+// to invoke the Account constructor
 BrassAccount::BrassAccount(string name, int id, double balance) 
     : Account(name, id, balance) {}
 
@@ -28,6 +33,10 @@ bool BrassAccount::withdraw(double amt) {
     }
 }
 
+// The BrassPlusAccount constructor has more to do than the
+// BrassAccount constructor. Here, we invoke the BrassAccount
+// constructor in a member initialiation list, then initialize
+// values for overdraftPenalty and overdraftBalance.
 BrassPlusAccount::BrassPlusAccount(string name, int id, double balance, double overdraftPenalty)
     : BrassAccount(name, id, balance)
 {
@@ -35,12 +44,19 @@ BrassPlusAccount::BrassPlusAccount(string name, int id, double balance, double o
     this->overdraftBalance = 0.0;
 }
 
+// This method overrides the BrassAccount print() method.
+// As part of a BrassPlusAccount's print() functionality,
+// it calls the BrassAccount print() method.
 void BrassPlusAccount::print() {
     BrassAccount::print();
     cout << "Insufficient balance: $" << this->balance;
     cout << " Overdraft balance: $" << this->overdraftBalance << endl;
 }
 
+// Another example of overriding a base class's method
+// and extending its functionality. We rely on the BrassAccount
+// method to actually do the withdraw, but add our own functionality
+// to deal with overdrafts.
 bool BrassPlusAccount::withdraw(double amt) {
     if (BrassAccount::withdraw(amt)) {
         return true;
